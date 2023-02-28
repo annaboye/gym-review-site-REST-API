@@ -1,0 +1,42 @@
+exports.user = [
+    {
+        number: 1,
+        full_name: 'Anna Andersson',
+        user_alias: 'AdminAnkan',
+        email: 'ankanpankan@email.se',
+        password: 'secret',
+        is_admin: TRUE,
+      },
+      {
+        number: 2,
+        full_name: 'Bibbi Bibsson',
+        user_alias: 'Bibban',
+        email: 'bibban@email.se',
+        password: 'secret',
+        is_admin: FALSE,
+      },
+      {
+        number: 3,
+        full_name: 'Clarre Clersson',
+        user_alias: 'Clarre',
+        email: 'clarreparre@email.se',
+        password: 'secret',
+        is_admin: FALSE,
+      },
+      {
+        number: 4,
+        full_name: 'Ducky Ducksson',
+        user_alias: 'Ducky',
+        email: 'ducky@email.se',
+        password: 'secret',
+        is_admin: FALSE,
+      },
+      {
+        number: 5,
+        full_name: 'Erik Eriksson',
+        user_alias: 'Ecke',
+        email: 'eckepecke@email.se',
+        password: 'secret',
+        is_admin: FALSE,
+      },
+]
