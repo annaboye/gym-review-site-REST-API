@@ -1,4 +1,4 @@
-exports.gyms= [
+exports.gym= [
     {
     name: "Actic Skogås",
     adress: "Skogås torget 5",
