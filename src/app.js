@@ -1,9 +1,9 @@
 require("dotenv").config();
 require("express-async-errors");
 const express = require("express");
-// const apiRoutes = require("./routes");
-// const { errorMiddleware } = require("./middleware/errorMiddleware");
-// const { notFoundMiddleware } = require("./middleware/notFoundMiddleware");
+const apiRoutes = require("./routes");
+const { errorMiddleware } = require("./middleware/errorMiddleware");
+const { notFoundMiddleware } = require("./middleware/notFoundMiddleware");
 
 const { sequelize } = require("./database/config");
 
@@ -16,10 +16,10 @@ app.use((req, res, next) => {
   next();
 });
 
-// app.use("/api/v1", apiRoutes);
+app.use("/api/v1", apiRoutes);
 
-// app.use(notFoundMiddleware);
-// app.use(errorMiddleware);
+app.use(notFoundMiddleware);
+app.use(errorMiddleware);
 
 const port = process.env.PORT || 5000;
 const run = async () => {
