@@ -11,13 +11,12 @@ exports.getAllUsers = async (req, res) => {
   // if (req.user.role === userRoles.ADMIN) {
   const [users, metadata] = await sequelize.query(
     //metadata?
-    `SELECT id, user_alias, email FROM user;`
+    `SELECT id, full_name, user_alias, email FROM user;`
     // {
     //   bind: { users }, //Ska man göra så här? Ska man ha bind på denna controller?
     //   type: QueryTypes.SELECT,
     // }
-  ); //FRÅGA - vi skippar password antar jag, skippa även full_name? Har dock med user_alias här liksom på nästa controller, ska vi ha det?
-
+  ); //FRÅGA - vi skippar password antar jag?
   console.log(users);
 
   if (!users) throw new NotFoundError("Oh no, there are no registered users!");
