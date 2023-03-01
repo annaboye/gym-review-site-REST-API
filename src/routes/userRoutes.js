@@ -7,13 +7,14 @@ const {
   createUser,
   updateUserById,
   deleteUserById,
-} = require("../controllers/userControllers");
+} = require("../controllers/userController");
 const {
   isAuthenticated,
   authorizeRoles,
 } = require("../middleware/authenticationMiddleware");
 
 router.get("/", isAuthenticated, authorizeRoles(userRoles.ADMIN), getAllUsers);
+// router.get("/", getAllUsers);
 router.get("/:userId", isAuthenticated, getUserById);
 router.post("/", isAuthenticated, createUser);
 router.put("/:userId", isAuthenticated, updateUserById);

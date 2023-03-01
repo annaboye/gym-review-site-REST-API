@@ -29,7 +29,7 @@ exports.register = async (req, res) => {
     );
   } else {
     await sequelize.query(
-      `INSERT INTO user (full_name, user_alias, email, password, is_admin) VALUES ($full_name, $user_alias, $email, $password)`,
+      `INSERT INTO user (full_name, user_alias, email, password, is_admin) VALUES ($full_name, $user_alias, $email, $password, FALSE)`,
       {
         bind: {
           full_name: full_name,
