@@ -1,6 +1,15 @@
+const { UnauthenticatedError } = require("../utils/errors");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const { sequelize } = require("../database/config");
+const { QueryTypes } = require("sequelize");
+const { userRoles } = require("../constants/users");
+
 exports.getAllGyms = async (req, res) => {
   try {
-    return res.send("Getallgyms");
+    const [results, metadata] = await sequelize.query(`SELECT * FROM gym`, {});
+
+    return res.json(results);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: error.message });
@@ -8,8 +17,18 @@ exports.getAllGyms = async (req, res) => {
 };
 
 exports.getGymById = async (req, res) => {
+  const gymId = req.params.gymId || req.body.gymId;
+
   try {
-    return res.send("getGymById");
+    const [results, metadata] = await sequelize.query(
+      `SELECT * FROM gym WHERE id = $gymId`,
+      {
+        bind: {
+          gymId: gymId,
+        },
+      }
+    );
+    return res.json(results);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: error.message });
