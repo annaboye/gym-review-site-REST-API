@@ -24,7 +24,7 @@ exports.register = async (req, res) => {
           user_alias: user_alias,
           password: hashedpassword,
           email: email,
-        },
+        }, //FRÅGA - vill vi ha bind på full_name och use_alias?
       }
     );
   } else {
@@ -47,7 +47,7 @@ exports.register = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-  const { email, password: canditatePassword } = req.body;
+  const { email, password: canditatePassword } = req.body; // FRÅGA: förklaring på candidatePassword?
 
   const [user, metadata] = await sequelize.query(
     `SELECT * FROM user WHERE email = $email LIMIT 1;`,

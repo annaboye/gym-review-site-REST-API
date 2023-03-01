@@ -4,23 +4,28 @@ const { sequelize } = require("../database/config");
 const { QueryTypes } = require("sequelize");
 
 exports.getAllUsers = async (req, res) => {
-  try {
-    return res.send("Get all users"); //scaffold return m meddelande
-  } catch (error) {
-    console.error(error);
-    // Send the following response if error occurred
-    return res.status(500).json({ message: error.message });
-  }
+  const [users, metadata] = await sequelize.query(
+    `SELECT id, user_alias, email FROM user`
+  ); //FRÅGA - vi skippar password antar jag, skippa även full_name? Har dock med user_alias här liksom på nästa controller, ska vi ha det?
+  return res.json(users);
 };
 
 exports.getUserById = async (req, res) => {
-  try {
-    return res.send("Get user by Id"); //scaffold return m meddelande
-  } catch (error) {
-    console.error(error);
-    // Send the following response if error occurred
-    return res.status(500).json({ message: error.message });
-  }
+  const userId = req.params.userId;
+
+  const [user, metadata] = await sequelize.query(
+    "SELECT id, user_alias, email FROM users WHERE id = $userId",
+    {
+      bind: { userId },
+      type: QueryTypes.SELECT,
+    }
+  );
+
+  // Not found error (ok since since route is authenticated)
+  if (!user) throw new NotFoundError("That user does not exist");
+
+  // Send back user info
+  return res.json(user);
 };
 
 exports.createUser = async (req, res) => {
