@@ -2,7 +2,7 @@ const { NotFoundError, BadRequestError } = require("../utils/errors");
 const { sequelize } = require("../database/config");
 const { QueryTypes } = require("sequelize");
 
-// GET /api/v1/reviews - Get all reviews
+// Get all reviews
 exports.getAllReviews = async (req, res) => {
   try {
     return res.send("Get all reviews"); //scaffold return m meddelande
@@ -14,7 +14,7 @@ exports.getAllReviews = async (req, res) => {
   }
 };
 
-// GET /api/v1/reviews/:reviewId - Get review by id
+// Get review by id
 exports.getReviewById = async (req, res) => {
   try {
     return res.send("Get review by id"); //scaffold return m meddelande
@@ -26,7 +26,7 @@ exports.getReviewById = async (req, res) => {
   }
 };
 
-// POST /api/v1/reviews - Create new review
+// Create new review
 exports.createNewReview = async (req, res) => {
   try {
     return res.send("Create new review"); //scaffold return m meddelande
@@ -38,7 +38,7 @@ exports.createNewReview = async (req, res) => {
   }
 };
 
-// PUT /api/v1/reviews/:reviewId - Update review (by id)
+// Update review (by id)
 exports.updateReviewById = async (req, res) => {
   try {
     return res.send("Update review"); //scaffold return m meddelande
