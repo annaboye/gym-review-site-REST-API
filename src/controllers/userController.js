@@ -42,7 +42,7 @@ exports.getAllUsers = async (req, res) => {
 exports.getUserById = async (req, res) => {
   const userId = req.params.userId;
 
-  // if (req.user.role === userRoles.USER) {
+  // if (req.user.is_admin === userRoles.USER) {
   const [user, metadata] = await sequelize.query(
     `SELECT id, user_alias, email FROM user WHERE id = $userId;`,
     {
@@ -80,11 +80,28 @@ exports.updateUserById = async (req, res) => {
 };
 
 exports.deleteUserById = async (req, res) => {
-  try {
-    return res.send("Delete user"); //scaffold return m meddelande
-  } catch (error) {
-    console.error(error);
-    // Send the following response if error occurred
-    return res.status(500).json({ message: error.message });
+  const userId = req.params.userId;
+
+  if (userId != req.user?.userId && req.user.role !== userRoles.ADMIN) {
+    throw new UnauthorizedError("Unauthorized Access");
   }
+
+  const [results, metadata] = await sequelize.query(
+    `DELETE FROM user WHERE id = $userId RETURNING *;`,
+    {
+      bind: { userId },
+    }
+  );
+
+  // Not found error (ok since since route is authenticated)
+  if (!results || !results[0])
+    throw new NotFoundError("That user does not exist");
+
+  await sequelize.query(`DELETE FROM review WHERE fk_user_id = $userId;`, {
+    //FRÅGA: bör delete av reviews komma före delete user?
+    bind: { userId },
+  });
+
+  // Send back user info
+  return res.sendStatus(204);
 };

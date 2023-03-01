@@ -15,6 +15,13 @@ exports.register = async (req, res) => {
     `SELECT id FROM user LIMIT 1`
   );
 
+  //check so user_alias doesnt already exist? I.e. is unique?
+  //Throw error if does already exist? "Sorry, that alias is not available." Eller skydda känslig info?
+  //avvägning errormeddelande - hur känsligt är det att avslöja i error meddelandet om redan finns?
+  //check so email doesnt already exist? I.e. is unique?
+  //Throw error if does already exist? "That e-mail is already registered as a user." Eller inte säga att epost finns pga risk för hackning?
+  //avvägning errormeddelande - hur känsligt är det att avslöja i error meddelandet om redan finns?
+
   if (!results || results.length < 1) {
     await sequelize.query(
       `INSERT INTO user (full_name, user_alias, email, password, is_admin) VALUES ($full_name, $user_alias, $email, $password, TRUE)`,
@@ -67,8 +74,11 @@ exports.login = async (req, res) => {
   );
   if (!isPasswordCorrect) throw new UnauthenticatedError("Invalid Credentials");
 
+  //skapa datan i.e. payloaden som vi vill att vår jwt token ska innehålla: (obs lägg ej in känslig info här iom alla jwt webtokens kan avkrypteras enkelt tex på jwt.io)
+  //inkludera bara data i vår payload som vi inte har ngt emot att alla ser! obs!
   const jwtPayload = {
     userId: user.id,
+    userAlias: user.user_alias,
     email: user.email,
     role: user["is_admin"] === 1 ? userRoles.ADMIN : userRoles.USER,
   };
