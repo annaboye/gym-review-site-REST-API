@@ -75,22 +75,31 @@ exports.deleteUserById = async (req, res) => {
     throw new UnauthorizedError("Unauthorized Access");
   }
 
-  const [results, metadata] = await sequelize.query(
+  const [userExists, userExistsMetaData] = await sequelize.query(
+    `SELECT * FROM user WHERE id = $userId;`,
+    {
+      bind: { userId },
+    }
+  );
+
+  if (!userExists || !userExists[0]) {
+    throw new NotFoundError("That user does not exist");
+  } else {
+    const [userHasReviews, metadata] = await sequelize.query(
+      `DELETE FROM review WHERE fk_user_id = $userId;`,
+      {
+        bind: { userId },
+      }
+    );
+  }
+
+  const [results, resultsMetaData] = await sequelize.query(
     `DELETE FROM user WHERE id = $userId RETURNING *;`,
     {
       bind: { userId },
     }
   );
 
-  // Not found error (ok since since route is authenticated)
-  if (!results || !results[0])
-    throw new NotFoundError("That user does not exist");
-
-  await sequelize.query(`DELETE FROM review WHERE fk_user_id = $userId;`, {
-    //FRÅGA: bör delete av reviews komma före delete user?
-    bind: { userId },
-  });
-
   // Send back user info
-  return res.sendStatus(204);
+  return res.status(204).send("Success, user was deleted!");
 };
