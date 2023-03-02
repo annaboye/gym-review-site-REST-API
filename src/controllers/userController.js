@@ -1,6 +1,10 @@
 const { userRoles, gymRoles } = require("../constants/users");
 
-const { NotFoundError, BadRequestError } = require("../utils/errors");
+const {
+  NotFoundError,
+  BadRequestError,
+  UnauthorizedError,
+} = require("../utils/errors");
 const { sequelize } = require("../database/config");
 const { QueryTypes } = require("sequelize");
 
@@ -8,35 +12,33 @@ exports.getAllUsers = async (req, res) => {
   const limit = Number(req.query?.limit || 10);
   const offset = Number(req.query.offset || 0);
 
-  // if (req.user.role === userRoles.ADMIN) {
-  const [users, metadata] = await sequelize.query(
-    //metadata?
-    `SELECT id, full_name, user_alias, email FROM user;`
-    // {
-    //   bind: { users }, //Ska man göra så här? Ska man ha bind på denna controller?
-    //   type: QueryTypes.SELECT,
-    // }
-  ); //FRÅGA - vi skippar password antar jag?
-  console.log(users);
+  if (req.user.role === userRoles.ADMIN) {
+    const [users, userMetaData] = await sequelize.query(
+      `SELECT id, full_name, user_alias, email FROM user;`
+    );
 
-  if (!users) throw new NotFoundError("Oh no, there are no registered users!");
+    if (!users)
+      throw new NotFoundError("Oh no, there are no registered users!");
 
-  const [numberOfUsers] =
-    await sequelize.query(`SELECT COUNT(*) AS number_of_users
-    FROM user;;`);
+    const [numberOfUsers] =
+      await sequelize.query(`SELECT COUNT(*) AS number_of_users
+    FROM user;`);
 
-  return res.json({
-    data: users,
-    metadata: {
-      numberOfUsers: numberOfUsers,
-      limit: limit,
-      offset: offset,
-      count: users.length,
-    },
-  });
-  // } else {
-  //   throw new UnauthorizedError("Sorry, you are not allowed to perform this action");
-  // }
+    return res.json({
+      data: users,
+      metadata: {
+        // @ts-ignore
+        numberOfUsers: numberOfUsers[0].number_of_users,
+        limit: limit,
+        offset: offset,
+        count: users.length,
+      },
+    });
+  } else {
+    throw new UnauthorizedError(
+      "Sorry, you are not allowed to perform this action"
+    );
+  }
 };
 
 exports.getUserById = async (req, res) => {
