@@ -75,6 +75,11 @@ exports.deleteUserById = async (req, res) => {
     throw new UnauthorizedError("Unauthorized Access");
   }
 
+  await sequelize.query(`DELETE FROM review WHERE fk_user_id = $userId;`, {
+    //FRÅGA: bör delete av reviews komma före delete user?
+    bind: { userId },
+  });
+
   const [results, metadata] = await sequelize.query(
     `DELETE FROM user WHERE id = $userId RETURNING *;`,
     {
@@ -85,11 +90,6 @@ exports.deleteUserById = async (req, res) => {
   // Not found error (ok since since route is authenticated)
   if (!results || !results[0])
     throw new NotFoundError("That user does not exist");
-
-  await sequelize.query(`DELETE FROM review WHERE fk_user_id = $userId;`, {
-    //FRÅGA: bör delete av reviews komma före delete user?
-    bind: { userId },
-  });
 
   // Send back user info
   return res.sendStatus(204);
