@@ -58,17 +58,6 @@ exports.getUserById = async (req, res) => {
   // };
 };
 
-exports.createUser = async (req, res) => {
-  //FRÅGA - ska vi ha denna eller bara skapa i authController?
-  try {
-    return res.send("Create user"); //scaffold return m meddelande
-  } catch (error) {
-    console.error(error);
-    // Send the following response if error occurred
-    return res.status(500).json({ message: error.message });
-  }
-};
-
 exports.updateUserById = async (req, res) => {
   try {
     return res.send("update user"); //scaffold return m meddelande

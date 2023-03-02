@@ -16,8 +16,8 @@ exports.register = async (req, res) => {
   );
 
   //check so user_alias doesnt already exist? I.e. is unique?
-  //Throw error if does already exist? "Sorry, that alias is not available." Eller skydda känslig info?
-  //avvägning errormeddelande - hur känsligt är det att avslöja i error meddelandet om redan finns?
+  //Throw error if does already exist? "Sorry, that alias is not available."
+
   //check so email doesnt already exist? I.e. is unique?
   //Throw error if does already exist? "That e-mail is already registered as a user." Eller inte säga att epost finns pga risk för hackning?
   //avvägning errormeddelande - hur känsligt är det att avslöja i error meddelandet om redan finns?
@@ -54,7 +54,7 @@ exports.register = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-  const { email, password: canditatePassword } = req.body; // FRÅGA: förklaring på candidatePassword?
+  const { email, password: canditatePassword } = req.body; // CandidatePassword är en variabel vi skapar.
 
   const [user, metadata] = await sequelize.query(
     `SELECT * FROM user WHERE email = $email LIMIT 1;`,

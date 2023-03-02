@@ -13,7 +13,7 @@ exports.registerSchema = [
   body("user_alias") //lagt till detta för vår gym app.
     .not()
     .isEmpty()
-    .isLength({ min: 3, max: 50 })
+    .isLength({ min: 3, max: 30 })
     .withMessage(
       "Sorry, your user alias must be between 3 and 50 characters long. Try again!"
     ),
