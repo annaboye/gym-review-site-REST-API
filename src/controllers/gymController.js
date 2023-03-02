@@ -70,6 +70,9 @@ exports.getGymById = async (req, res) => {
         },
       }
     );
+    return res.json({
+      data: gym,
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: error.message });
@@ -122,8 +125,27 @@ exports.createGym = async (req, res) => {
 };
 
 exports.updateGymById = async (req, res) => {
+  const { gym_name, adress, zipcode, phone, fk_city_id } = req.body;
+  const gymId = req.params.gymId;
   try {
-    return res.send("updateGymById");
+    if (req.user?.role !== userRoles.ADMIN) {
+      throw new UnauthorizedError("Unauthorized Access");
+    }
+    const gymToUpdate = await sequelize.query(
+      `UPDATE gym SET gym_name= $gym_name, adress = $adress, zipcode = $zipcode, phone=$phone, fk_city_id=$fk_city_id
+      WHERE id = $gymId;`,
+      {
+        bind: {
+          gym_name: gym_name,
+          adress: adress,
+          zipcode: zipcode,
+          phone: phone,
+          fk_city_id: fk_city_id,
+          gymId: gymId,
+        },
+      }
+    );
+    return res.status(201).json({ message: "gym successfully updated" });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: error.message });
