@@ -4,7 +4,7 @@ This is a group assignment in the api-development course which is part of the fr
 
 ## About the project
 
-The assignment is to create a REST-API for a map/review site.
+The assignment is to create a REST-API for a map/review site using express server and SQLite.
 
 ### Built With
 
@@ -28,6 +28,6 @@ Anna Boye
 4. Start server, in your terminal run the following command : npm run dev
 5. You can now use the Postman Collection and test this application
 
-## Mockdata
-
 ## Database Design
+
+![Database Design] (https://raw.githubusercontent.com/annaboye/gym-review-site-REST-API/20c2bf5554925b9d9068ce212ef092b8c5c19490/dbDesign/dBdesign.png)
