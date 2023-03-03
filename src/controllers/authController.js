@@ -1,4 +1,4 @@
-const { UnauthenticatedError } = require("../utils/errors");
+const { UnauthenticatedError, BadRequestError } = require("../utils/errors");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { sequelize } = require("../database/config");
@@ -15,15 +15,27 @@ exports.register = async (req, res) => {
     `SELECT id FROM user LIMIT 1`
   );
 
-  //check so user_alias doesnt already exist? I.e. is unique?
-  //Throw error if does already exist? "Sorry, that alias is not available."
-  const [uniqueCredentials, uniqueCredentialsMetadata] = await sequelize.query(
-    `SELECT user_alias FROM user WHERE user_alias = = $user_alias LIMIT 1`
+  const [aliasExists, aliasExistsMetadata] = await sequelize.query(
+    `SELECT COUNT(*) from user WHERE user_alias = $user_alias`,
+    {
+      bind: { user_alias },
+    }
   );
+  console.log("Users with that alias: ", aliasExists);
 
-  //check so email doesnt already exist? I.e. is unique?
-  //Throw error if does already exist? "That e-mail is already registered as a user." Eller inte säga att epost finns pga risk för hackning?
-  //avvägning errormeddelande - hur känsligt är det att avslöja i error meddelandet om redan finns?
+  const [emailExists, emailExistsMetadata] = await sequelize.query(
+    `SELECT COUNT(*) from user WHERE email = $email`,
+    {
+      bind: { email },
+    }
+  );
+  console.log("Users with that email: ", emailExists);
+
+  if (aliasExists || emailExists) {
+    throw new BadRequestError(
+      "Please check your details, either that alias not available, or you already have an account."
+    );
+  }
 
   if (!existingUser || existingUser.length < 1) {
     await sequelize.query(

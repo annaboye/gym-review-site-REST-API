@@ -1,4 +1,4 @@
-const { userRoles, gymRoles } = require("../constants/users");
+const { userRoles } = require("../constants/users");
 
 const {
   NotFoundError,
