@@ -1,10 +1,12 @@
-const { UnauthenticatedError, NotFoundError } = require("../utils/errors");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+const {
+  NotFoundError,
+  UnauthorizedError,
+  BadRequestError,
+} = require("../utils/errors");
+
 const { sequelize } = require("../database/config");
 const { QueryTypes } = require("sequelize");
 const { userRoles } = require("../constants/users");
-const { CustomAPIError, BadRequestError } = require("../utils/errors");
 
 exports.getAllGyms = async (req, res) => {
   try {
@@ -101,10 +103,10 @@ exports.createGym = async (req, res) => {
     if (gymAllReadyInDatabase) {
       throw new BadRequestError("That gym already exists");
     } else {
-      await sequelize.query(
+      let [newGymId] = await sequelize.query(
         `INSERT INTO gym (gym_name, adress, zipcode, phone, fk_city_id)  
     VALUES 
-    ($gym_name, $adress, $zipcode, $phone, $fk_city_id);`,
+    ($gym_name, $adress, $zipcode, $phone, $fk_city_id) ;`,
         {
           bind: {
             gym_name: gym_name,
@@ -113,10 +115,17 @@ exports.createGym = async (req, res) => {
             phone: phone,
             fk_city_id: fk_city_id,
           },
+          type: QueryTypes.INSERT,
         }
       );
+      console.log(newGymId);
 
-      return res.status(201).json({ message: "gym successfully created" });
+      return res
+        .setHeader(
+          "Location",
+          `${req.protocol}://${req.headers.host}/api/v1/gyms/${newGymId}`
+        )
+        .sendStatus(201);
     }
   } catch (error) {
     console.error(error);
@@ -131,9 +140,9 @@ exports.updateGymById = async (req, res) => {
     if (req.user?.role !== userRoles.ADMIN) {
       throw new UnauthorizedError("Unauthorized Access");
     }
-    const gymToUpdate = await sequelize.query(
+    const [gymToUpdate] = await sequelize.query(
       `UPDATE gym SET gym_name= $gym_name, adress = $adress, zipcode = $zipcode, phone=$phone, fk_city_id=$fk_city_id
-      WHERE id = $gymId;`,
+      WHERE id = $gymId RETURNING *;`,
       {
         bind: {
           gym_name: gym_name,
@@ -145,15 +154,41 @@ exports.updateGymById = async (req, res) => {
         },
       }
     );
-    return res.status(201).json({ message: "gym successfully updated" });
+    console.log(gymToUpdate[0]);
+
+    return res.status(200).json(gymToUpdate[0]);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: error.message });
   }
 };
 exports.deleteGymById = async (req, res) => {
+  const gymId = req.params.gymId;
+
   try {
-    return res.send("deleteGymById");
+    if (req.user?.role !== userRoles.ADMIN) {
+      throw new UnauthorizedError("Unauthorized Access");
+    }
+    const [gymExists, userExistsMetaData] = await sequelize.query(
+      `SELECT * FROM gym WHERE id = $gymId;`,
+      {
+        bind: { gymId },
+      }
+    );
+
+    if (!gymExists || !gymExists[0]) {
+      throw new NotFoundError("That gym does not exist");
+    } else {
+      await sequelize.query(`DELETE FROM review WHERE fk_gym_id = $gymId;`, {
+        bind: { gymId },
+      });
+
+      await sequelize.query(`DELETE FROM gym WHERE id = $gymId RETURNING *;`, {
+        bind: { gymId },
+      });
+
+      return res.status(200).json({ message: "gym successfully deleted" });
+    }
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: error.message });
