@@ -59,7 +59,7 @@ exports.getUserById = async (req, res) => {
       throw new UnauthorizedError("Unauthorized Access");
     }
     const [userToGet, userToGetMetaData] = await sequelize.query(
-      `SELECT id, user_alias, email FROM user WHERE id = $userId;`,
+      `SELECT id, full_name, user_alias, email FROM user WHERE id = $userId;`,
       {
         bind: { userId },
         type: QueryTypes.SELECT,
@@ -97,6 +97,8 @@ exports.updateUserById = async (req, res) => {
         },
       }
     );
+    console.log(userToUpdate[0]);
+
     return res.status(201).json({ message: "Success! User is now updated!" });
   } catch (error) {
     console.error(error);
@@ -121,14 +123,30 @@ exports.deleteUserById = async (req, res) => {
     if (!userExists || !userExists[0]) {
       throw new NotFoundError("That user does not exist");
     } else {
-      const [userHasReviews, userhasReviewsMetaData] = await sequelize.query(
-        //FRÅGA: variaben userHasReviews används inte, ska den finnas ändå? Eller ska man direkt köra await sequelize.query?
-        `DELETE FROM review WHERE fk_user_id = $userId;`,
-        {
-          bind: { userId },
-        }
+      const [userReviewsToBeDeleted, userReviewsToBeDeletedMetaData] =
+        await sequelize.query(
+          //FRÅGA: variaben userHasReviews används inte, ska den finnas ändå? Eller ska man direkt köra await sequelize.query?
+          `SELECT * FROM review WHERE fk_user_id = $userId;`,
+          {
+            bind: { userId },
+          }
+        );
+      console.log(
+        "User reviews before deletion:",
+        userReviewsToBeDeleted.length
       );
+
+      const [userReviewsDeleted, userReviewsDeletedMetaData] =
+        await sequelize.query(
+          //FRÅGA: variaben userHasReviews används inte, ska den finnas ändå? Eller ska man direkt köra await sequelize.query?
+          `DELETE FROM review WHERE fk_user_id = $userId;`,
+          {
+            bind: { userId },
+          }
+        );
+      console.log("User reviews after deletion:", userReviewsDeleted.length);
     }
+
     const [results, resultsMetaData] = await sequelize.query(
       //FRÅGA: variaben results används inte, ska den finnas ändå?
 
@@ -137,6 +155,8 @@ exports.deleteUserById = async (req, res) => {
         bind: { userId },
       }
     );
+    console.log(results[0]);
+
     return res.status(200).json({ message: "Success, user was deleted!" });
   } catch (error) {
     console.error(error);
