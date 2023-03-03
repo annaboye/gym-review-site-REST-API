@@ -29,4 +29,5 @@ Anna Boye
 5. You can now use the Postman Collection and test this application
 
 ## Database Design
-![database](dbDesign.png)
+
+![database](./dbDesign/dBdesign.png)
