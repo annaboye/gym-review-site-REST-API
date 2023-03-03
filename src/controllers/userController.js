@@ -76,10 +76,30 @@ exports.getUserById = async (req, res) => {
 
 exports.updateUserById = async (req, res) => {
   try {
-    return res.send("update user"); //scaffold return m meddelande
+    const userId = req.params.userId;
+    const { full_name, user_alias, email, password } = req.body;
+
+    if (userId != req.user?.userId && req.user.role !== userRoles.ADMIN) {
+      throw new UnauthorizedError("Unauthorized Access");
+    }
+
+    const [userToUpdate, userToUpdateMetaData] = await sequelize.query(
+      `UPDATE user 
+      SET full_name = $full_name, user_alias = $user_alias, email = $email, password = $password
+      WHERE id = $userId;`,
+      {
+        bind: {
+          full_name: full_name,
+          user_alias: user_alias,
+          email: email,
+          password: password,
+          userId: userId,
+        },
+      }
+    );
+    return res.status(201).json({ message: "Success! User is now updated!" });
   } catch (error) {
     console.error(error);
-    // Send the following response if error occurred
     return res.status(500).json({ message: error.message });
   }
 };
