@@ -30,4 +30,4 @@ Anna Boye
 
 ## Database Design
 
-![Database Design] (https://raw.githubusercontent.com/annaboye/gym-review-site-REST-API/20c2bf5554925b9d9068ce212ef092b8c5c19490/dbDesign/dBdesign.png)
+![Database Design]: (https://raw.githubusercontent.com/annaboye/gym-review-site-REST-API/20c2bf5554925b9d9068ce212ef092b8c5c19490/dbDesign/dBdesign.png)
