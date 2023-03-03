@@ -103,7 +103,8 @@ exports.updateUserById = async (req, res) => {
         },
       }
     );
-    console.log("User to update", userToUpdate[0]);
+    console.log("User to update", userToUpdate[0]); // FRÅGA: Detta blir undefined.
+    //TA BORT? Men då används inte variabeln userToUpdate - ska man då lägga await sequelize.query utan att fånga upp den i en variabel då?
 
     return res.status(201).json({ message: "Success! User is now updated!" });
   } catch (error) {
