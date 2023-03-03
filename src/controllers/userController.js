@@ -65,6 +65,8 @@ exports.getUserById = async (req, res) => {
         type: QueryTypes.SELECT,
       }
     );
+    console.log("User to get", userToGet);
+
     if (!userToGet)
       throw new NotFoundError("Sorry, that user does not exist. Try again :)");
     return res.json(userToGet);
@@ -97,7 +99,7 @@ exports.updateUserById = async (req, res) => {
         },
       }
     );
-    console.log(userToUpdate[0]);
+    console.log("User to update", userToUpdate[0]);
 
     return res.status(201).json({ message: "Success! User is now updated!" });
   } catch (error) {
@@ -123,22 +125,8 @@ exports.deleteUserById = async (req, res) => {
     if (!userExists || !userExists[0]) {
       throw new NotFoundError("That user does not exist");
     } else {
-      const [userReviewsToBeDeleted, userReviewsToBeDeletedMetaData] =
-        await sequelize.query(
-          //FRÅGA: variaben userHasReviews används inte, ska den finnas ändå? Eller ska man direkt köra await sequelize.query?
-          `SELECT * FROM review WHERE fk_user_id = $userId;`,
-          {
-            bind: { userId },
-          }
-        );
-      console.log(
-        "User reviews before deletion:",
-        userReviewsToBeDeleted.length
-      );
-
       const [userReviewsDeleted, userReviewsDeletedMetaData] =
         await sequelize.query(
-          //FRÅGA: variaben userHasReviews används inte, ska den finnas ändå? Eller ska man direkt köra await sequelize.query?
           `DELETE FROM review WHERE fk_user_id = $userId;`,
           {
             bind: { userId },
@@ -147,15 +135,13 @@ exports.deleteUserById = async (req, res) => {
       console.log("User reviews after deletion:", userReviewsDeleted.length);
     }
 
-    const [results, resultsMetaData] = await sequelize.query(
-      //FRÅGA: variaben results används inte, ska den finnas ändå?
-
+    const [deleteUser, resultsMetaData] = await sequelize.query(
       `DELETE FROM user WHERE id = $userId RETURNING *;`,
       {
         bind: { userId },
       }
     );
-    console.log(results[0]);
+    console.log("Deleted user was:", deleteUser[0]);
 
     return res.status(200).json({ message: "Success, user was deleted!" });
   } catch (error) {
