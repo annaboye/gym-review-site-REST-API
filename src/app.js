@@ -4,6 +4,11 @@ const express = require("express");
 const apiRoutes = require("./routes");
 const { errorMiddleware } = require("./middleware/errorMiddleware");
 const { notFoundMiddleware } = require("./middleware/notFoundMiddleware");
+const cors = require("cors");
+const xss = require("xss-clean");
+const mongoSanitize = require("express-mongo-sanitize");
+const { rateLimit } = require("express-rate-limit");
+const { default: helmet } = require("helmet");
 
 const { sequelize } = require("./database/config");
 
@@ -15,7 +20,16 @@ app.use((req, res, next) => {
   console.log(`Processing ${req.method} request to ${req.path}`);
   next();
 });
-
+app.use(cors());
+app.use(xss());
+app.use(mongoSanitize());
+app.use(
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 70,
+  })
+);
+app.use(helmet());
 app.use("/api/v1", apiRoutes);
 
 app.use(notFoundMiddleware);
