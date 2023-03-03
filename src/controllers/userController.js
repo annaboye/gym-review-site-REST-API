@@ -23,12 +23,16 @@ exports.getAllUsers = async (req, res) => {
           },
         }
       );
+      console.log("Users: ", users);
+
       if (!users)
         throw new NotFoundError("Oh no, there are no registered users!");
 
       const [numberOfUsers] = await sequelize.query(
         `SELECT COUNT(*) AS number_of_users FROM user;`
       );
+      // @ts-ignore
+      console.log("Number of users: ", numberOfUsers[0].number_of_users);
 
       return res.json({
         data: users,
