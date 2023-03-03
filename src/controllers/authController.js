@@ -15,27 +15,28 @@ exports.register = async (req, res) => {
     `SELECT id FROM user LIMIT 1`
   );
 
-  const [aliasExists, aliasExistsMetadata] = await sequelize.query(
-    `SELECT COUNT(*) from user WHERE user_alias = $user_alias`,
-    {
-      bind: { user_alias },
-    }
-  );
-  console.log("Users with that alias: ", aliasExists);
+  //FUNKAR INTE - VARFÖR?
+  // const [aliasExists, aliasExistsMetadata] = await sequelize.query(
+  //   `SELECT COUNT(*) from user WHERE user_alias = $user_alias`,
+  //   {
+  //     bind: { user_alias },
+  //   }
+  // );
+  // console.log("Users with that alias: ", aliasExists);
 
-  const [emailExists, emailExistsMetadata] = await sequelize.query(
-    `SELECT COUNT(*) from user WHERE email = $email`,
-    {
-      bind: { email },
-    }
-  );
-  console.log("Users with that email: ", emailExists);
+  // const [emailExists, emailExistsMetadata] = await sequelize.query(
+  //   `SELECT COUNT(*) from user WHERE email = $email`,
+  //   {
+  //     bind: { email },
+  //   }
+  // );
+  // console.log("Users with that email: ", emailExists);
 
-  if (aliasExists || emailExists) {
-    throw new BadRequestError(
-      "Please check your details, either that alias not available, or you already have an account."
-    );
-  }
+  // if (aliasExists || emailExists) {
+  //   throw new BadRequestError(
+  //     "Please check your details, either that alias not available, or you already have an account."
+  //   );
+  // }
 
   if (!existingUser || existingUser.length < 1) {
     await sequelize.query(
