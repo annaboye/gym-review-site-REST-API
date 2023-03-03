@@ -11,27 +11,30 @@ exports.register = async (req, res) => {
   const salt = await bcrypt.genSalt(10);
   const hashedpassword = await bcrypt.hash(password, salt);
 
-  const [results, metadata] = await sequelize.query(
+  const [existingUser, existingUserMetadata] = await sequelize.query(
     `SELECT id FROM user LIMIT 1`
   );
 
   //check so user_alias doesnt already exist? I.e. is unique?
   //Throw error if does already exist? "Sorry, that alias is not available."
+  const [uniqueCredentials, uniqueCredentialsMetadata] = await sequelize.query(
+    `SELECT user_alias FROM user WHERE user_alias = = $user_alias LIMIT 1`
+  );
 
   //check so email doesnt already exist? I.e. is unique?
   //Throw error if does already exist? "That e-mail is already registered as a user." Eller inte säga att epost finns pga risk för hackning?
   //avvägning errormeddelande - hur känsligt är det att avslöja i error meddelandet om redan finns?
 
-  if (!results || results.length < 1) {
+  if (!existingUser || existingUser.length < 1) {
     await sequelize.query(
       `INSERT INTO user (full_name, user_alias, email, password, is_admin) VALUES ($full_name, $user_alias, $email, $password, TRUE)`,
       {
         bind: {
           full_name: full_name,
           user_alias: user_alias,
-          password: hashedpassword,
           email: email,
-        }, //FRÅGA - vill vi ha bind på full_name och use_alias?
+          password: hashedpassword,
+        },
       }
     );
   } else {
@@ -70,6 +73,7 @@ exports.login = async (req, res) => {
 
   const isPasswordCorrect = await bcrypt.compare(
     canditatePassword,
+    // @ts-ignore
     user.password
   );
   if (!isPasswordCorrect) throw new UnauthenticatedError("Invalid Credentials");
@@ -77,8 +81,11 @@ exports.login = async (req, res) => {
   //skapa datan i.e. payloaden som vi vill att vår jwt token ska innehålla: (obs lägg ej in känslig info här iom alla jwt webtokens kan avkrypteras enkelt tex på jwt.io)
   //inkludera bara data i vår payload som vi inte har ngt emot att alla ser! obs!
   const jwtPayload = {
+    // @ts-ignore
     userId: user.id,
+    // @ts-ignore
     userAlias: user.user_alias,
+    // @ts-ignore
     email: user.email,
     role: user["is_admin"] === 1 ? userRoles.ADMIN : userRoles.USER,
   };

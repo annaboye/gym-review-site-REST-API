@@ -7,6 +7,7 @@ const {
 } = require("../utils/errors");
 const { sequelize } = require("../database/config");
 const { QueryTypes } = require("sequelize");
+const { text } = require("express");
 
 exports.getAllUsers = async (req, res) => {
   try {
@@ -59,6 +60,10 @@ exports.getUserById = async (req, res) => {
   try {
     const userId = req.params.userId;
 
+    if (isNaN(userId)) {
+      throw new BadRequestError("User ID must be a number! Try again.");
+    }
+
     if (userId != req.user?.userId && req.user.role !== userRoles.ADMIN) {
       throw new UnauthorizedError("Unauthorized Access");
     }
@@ -85,8 +90,50 @@ exports.updateUserById = async (req, res) => {
     const userId = req.params.userId;
     const { full_name, user_alias, email, password } = req.body;
 
+    if (isNaN(userId)) {
+      throw new BadRequestError("User ID must be a number! Try again.");
+    }
+
     if (userId != req.user?.userId && req.user.role !== userRoles.ADMIN) {
       throw new UnauthorizedError("Unauthorized Access");
+    }
+
+    if (full_name == "" || user_alias == "" || email == "" || password == "") {
+      throw new BadRequestError(
+        "Input fields to update cannot be empty! Try again."
+      );
+    }
+
+    if (typeof full_name !== "string") {
+      throw new BadRequestError("Name must be a string! Try again.");
+    }
+
+    if (full_name.length < 3 || full_name.length > 60) {
+      throw new BadRequestError(
+        "Full name must be at least 3 characters (and max 60 characters)."
+      );
+    }
+
+    if (typeof user_alias !== "string") {
+      throw new BadRequestError("User alias must be a string! Try again.");
+    }
+    if (user_alias.length < 3 || user_alias.length > 30) {
+      throw new BadRequestError(
+        "User alias must be at least 3 characters (and max 30 characters)."
+      );
+    }
+
+    if (!email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)) {
+      throw new BadRequestError("User email must be an email! Try again.");
+    }
+
+    if (typeof password !== "string") {
+      throw new BadRequestError("Password must be a string! Try again.");
+    }
+    if (password.length < 6) {
+      throw new BadRequestError(
+        "Password must be at least 6 characters. Try again."
+      );
     }
 
     const [userToUpdate, userToUpdateMetaData] = await sequelize.query(
@@ -103,8 +150,7 @@ exports.updateUserById = async (req, res) => {
         },
       }
     );
-    console.log("User to update", userToUpdate[0]); // FRÅGA: Detta blir undefined.
-    //TA BORT? Men då används inte variabeln userToUpdate - ska man då lägga await sequelize.query utan att fånga upp den i en variabel då?
+    console.log("User to update", userToUpdate[0]); // FRÅGA: Detta blir undefined. //ELLER TA BORT? Men då används inte variabeln userToUpdate - ska man då lägga await sequelize.query utan att fånga upp den i en variabel då?
 
     return res.status(201).json({ message: "Success! User is now updated!" });
   } catch (error) {
@@ -116,6 +162,10 @@ exports.updateUserById = async (req, res) => {
 exports.deleteUserById = async (req, res) => {
   try {
     const userId = req.params.userId;
+
+    if (isNaN(userId)) {
+      throw new BadRequestError("User ID must be a number! Try again.");
+    }
 
     if (userId != req.user?.userId && req.user.role !== userRoles.ADMIN) {
       throw new UnauthorizedError("Unauthorized Access");
