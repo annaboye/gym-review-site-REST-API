@@ -140,7 +140,20 @@ exports.updateGymById = async (req, res) => {
     if (req.user?.role !== userRoles.ADMIN) {
       throw new UnauthorizedError("Unauthorized Access");
     }
-    const [gymToUpdate] = await sequelize.query(
+    const [gymExists] = await sequelize.query(
+      `SELECT * FROM gym WHERE id =$gymId;`,
+      {
+        bind: {
+          gymId: gymId,
+        },
+      }
+    );
+
+    if (!gymExists || gymExists.length < 1) {
+      throw new BadRequestError("That gym does not exists");
+    }
+
+    const [updatedGym] = await sequelize.query(
       `UPDATE gym SET gym_name= $gym_name, adress = $adress, zipcode = $zipcode, phone=$phone, fk_city_id=$fk_city_id
       WHERE id = $gymId RETURNING *;`,
       {
@@ -154,9 +167,10 @@ exports.updateGymById = async (req, res) => {
         },
       }
     );
-    console.log(gymToUpdate[0]);
 
-    return res.status(200).json(gymToUpdate[0]);
+    console.log(updatedGym[0]);
+
+    return res.status(200).json(updatedGym[0]);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: error.message });
