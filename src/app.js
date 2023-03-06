@@ -6,7 +6,7 @@ const { errorMiddleware } = require("./middleware/errorMiddleware");
 const { notFoundMiddleware } = require("./middleware/notFoundMiddleware");
 const cors = require("cors");
 const xss = require("xss-clean");
-const mongoSanitize = require("express-mongo-sanitize");
+
 const { rateLimit } = require("express-rate-limit");
 const { default: helmet } = require("helmet");
 
@@ -22,7 +22,7 @@ app.use((req, res, next) => {
 });
 app.use(cors());
 app.use(xss());
-app.use(mongoSanitize());
+
 app.use(
   rateLimit({
     windowMs: 15 * 60 * 1000,
