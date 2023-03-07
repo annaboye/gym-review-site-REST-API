@@ -15,12 +15,12 @@ const { sequelize } = require("./database/config");
 const app = express();
 
 app.use(express.json());
-
-app.use((req, res, next) => {
-  console.log(`Processing ${req.method} request to ${req.path}`);
-  next();
-});
-app.use(cors());
+app.use(
+  cors({
+    origin: ["http://localhost:3000"],
+    methods: ["GET", "PUT", "POST", "PATCH", "DELETE"],
+  })
+);
 app.use(xss());
 
 app.use(
@@ -30,6 +30,12 @@ app.use(
   })
 );
 app.use(helmet());
+
+app.use((req, res, next) => {
+  console.log(`Processing ${req.method} request to ${req.path}`);
+  next();
+});
+
 app.use("/api/v1", apiRoutes);
 
 app.use(notFoundMiddleware);
