@@ -2,7 +2,6 @@ const { NotFoundError, BadRequestError } = require("../utils/errors");
 const { sequelize } = require("../database/config");
 const { QueryTypes } = require("sequelize");
 
-// Get all reviews
 exports.getAllReviews = async (req, res) => {
   try {
     return res.send("Get all reviews"); //scaffold return m meddelande
@@ -28,6 +27,33 @@ exports.getReviewById = async (req, res) => {
 
 // Create new review
 exports.createNewReview = async (req, res) => {
+  const { title, description, number_of_stars, fk_gym_id } = req.body;
+  let userId = req.user?.userId;
+
+  let [newReviewId] = await sequelize.query(
+    `INSERT INTO review (title, description, number_of_stars, fk_gym_id, fk_user_id)  
+VALUES 
+($title, $description, $number_of_stars, $fk_gym_id, $fk_user_id) ;`,
+    {
+      bind: {
+        title: title,
+        description: description,
+        number_of_stars: number_of_stars,
+        fk_gym_id: fk_gym_id,
+        fk_user_id: userId,
+      },
+      type: QueryTypes.INSERT,
+    }
+  );
+  console.log(newReviewId);
+
+  return res
+    .setHeader(
+      "Location",
+      `${req.protocol}://${req.headers.host}/api/v1/review/${newReviewId}`
+    )
+    .sendStatus(201);
+
   try {
     return res.send("Create new review"); //scaffold return m meddelande
   } catch (error) {
