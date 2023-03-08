@@ -149,7 +149,7 @@ VALUES
         "Location",
         `${req.protocol}://${req.headers.host}/api/v1/review/${newReviewId}`
       )
-      .sendStatus(201);
+      .sendStatus(201); //lägga till .json(newReview) för att även skicka tillbaka jsonobjekt med det nyskapade objektet new Review?
   } catch (error) {
     console.error(error);
     return res.status(500).json({
