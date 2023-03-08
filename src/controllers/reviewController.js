@@ -12,7 +12,37 @@ exports.getAllReviews = async (req, res) => {
     });
   }
 };
+//
+exports.getAllReviews = async (req, res) => {
+  const gymId = req.params.gymId;
 
+  const [results, metadata] = await sequelize.query(
+    `
+      SELECT reviews.id AS reviewId, review_description, number_of_stars, user_id, users.username, reviews.gym_id, gyms.gym_name FROM reviews
+      LEFT JOIN gyms ON gyms.id = gym_id
+      LEFT JOIN users ON users.id = user_id
+      WHERE gym_id = $gymId;
+      `,
+    {
+      bind: { gymId: gymId },
+    }
+  );
+  if (!results || results.length == 0) {
+    throw new NotFoundError("did not find reviews for that gym");
+  }
+  const gymResponse = {
+    gymId: gymId,
+    gymName: results[0].gym_name,
+    reviews: results.map((reviews) => {
+      return {
+        details: reviews.review_description,
+        rating: reviews.number_of_stars,
+        writer: reviews.user_id,
+      };
+    }),
+  };
+  return res.json(gymResponse);
+};
 // Get review by id
 exports.getReviewById = async (req, res) => {
   try {
