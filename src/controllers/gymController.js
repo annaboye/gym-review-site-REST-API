@@ -82,9 +82,35 @@ exports.getGymById = async (req, res) => {
 };
 
 exports.createGym = async (req, res) => {
-  const { gym_name, adress, zipcode, phone, fk_city_id } = req.body;
-
   try {
+    const { gym_name, adress, zipcode, phone, fk_city_id } = req.body;
+
+    if (
+      gym_name == "" ||
+      adress == "" ||
+      zipcode == "" ||
+      phone == "" ||
+      fk_city_id == ""
+    ) {
+      throw new BadRequestError(
+        "Input fields to update cannot be empty! Try again."
+      );
+    }
+
+    if (typeof gym_name !== "string") {
+      throw new BadRequestError("gym_name must be a string! Try again.");
+    }
+
+    if (isNaN(zipcode)) {
+      throw new BadRequestError("zipcode must be a number! Try again.");
+    }
+    if (isNaN(phone)) {
+      throw new BadRequestError("phone must be a number! Try again.");
+    }
+    if (isNaN(fk_city_id)) {
+      throw new BadRequestError("city id must be a number! Try again.");
+    }
+
     if (req.user?.role !== userRoles.ADMIN) {
       throw new UnauthorizedError("Unauthorized Access");
     }
@@ -134,9 +160,35 @@ exports.createGym = async (req, res) => {
 };
 
 exports.updateGymById = async (req, res) => {
-  const { gym_name, adress, zipcode, phone, fk_city_id } = req.body;
-  const gymId = req.params.gymId;
   try {
+    const { gym_name, adress, zipcode, phone, fk_city_id } = req.body;
+    const gymId = req.params.gymId;
+    if (
+      gym_name == "" ||
+      adress == "" ||
+      zipcode == "" ||
+      phone == "" ||
+      fk_city_id == ""
+    ) {
+      throw new BadRequestError(
+        "Input fields to update cannot be empty! Try again."
+      );
+    }
+
+    if (typeof gym_name !== "string") {
+      throw new BadRequestError("gym_name must be a string! Try again.");
+    }
+
+    if (isNaN(zipcode)) {
+      throw new BadRequestError("zipcode must be a number! Try again.");
+    }
+    if (isNaN(phone)) {
+      throw new BadRequestError("phone must be a number! Try again.");
+    }
+    if (isNaN(fk_city_id)) {
+      throw new BadRequestError("city id must be a number! Try again.");
+    }
+
     if (req.user?.role !== userRoles.ADMIN) {
       throw new UnauthorizedError("Unauthorized Access");
     }
