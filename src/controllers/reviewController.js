@@ -163,7 +163,7 @@ exports.updateReviewById = async (req, res) => {
   const { title, description, number_of_stars } = req.body;
   const reviewId = req.params.reviewId;
   try {
-    const [userId, metadata] = await sequelize.query(
+    const [review, metadata] = await sequelize.query(
       `
     SELECT fk_user_id FROM review WHERE id = $reviewId;
       `,
@@ -173,14 +173,14 @@ exports.updateReviewById = async (req, res) => {
         },
       }
     );
-    console.log(userId);
-    if (!userId || userId.length == 0) {
-      throw new NotFoundError("did not find that userid");
+    console.log(review);
+    if (!review || review.length == 0) {
+      throw new NotFoundError("did not find any review with that id");
     }
 
-    // if (userId[0] != req.user?.userId) {
-    //   throw new UnauthorizedError("Unauthorized Access");
-    // }
+    if (review[0].fk_user_id != req.user?.userId) {
+      throw new UnauthorizedError("Unauthorized Access");
+    }
     const [updatedReview] = await sequelize.query(
       `UPDATE review SET title= $title, description = $description, number_of_stars = $number_of_stars
       WHERE id = $reviewId RETURNING *;`,
