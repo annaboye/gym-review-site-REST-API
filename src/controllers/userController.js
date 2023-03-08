@@ -1,5 +1,4 @@
 const { userRoles } = require("../constants/users");
-
 const {
   NotFoundError,
   BadRequestError,
@@ -8,6 +7,7 @@ const {
 const { sequelize } = require("../database/config");
 const { QueryTypes } = require("sequelize");
 const { text } = require("express");
+const bcrypt = require("bcrypt");
 
 exports.getAllUsers = async (req, res) => {
   try {
@@ -90,6 +90,9 @@ exports.updateUserById = async (req, res) => {
     const userId = req.params.userId;
     const { full_name, user_alias, email, password } = req.body;
 
+    const salt = await bcrypt.genSalt(10);
+    const hashedpassword = await bcrypt.hash(password, salt);
+
     if (isNaN(userId)) {
       throw new BadRequestError("User ID must be a number! Try again.");
     }
@@ -136,21 +139,20 @@ exports.updateUserById = async (req, res) => {
       );
     }
 
-    const [userToUpdate, userToUpdateMetaData] = await sequelize.query(
+    await sequelize.query(
       `UPDATE user 
-      SET full_name = $full_name, user_alias = $user_alias, email = $email, password = $password
+      SET full_name = $full_name, user_alias = $user_alias, email = $email, password = $hashedpassword
       WHERE id = $userId;`,
       {
         bind: {
           full_name: full_name,
           user_alias: user_alias,
           email: email,
-          password: password,
+          hashedpassword: hashedpassword,
           userId: userId,
         },
       }
     );
-    console.log("User to update", userToUpdate[0]); // FRÅGA: Detta blir undefined. //ELLER TA BORT? Men då används inte variabeln userToUpdate - ska man då lägga await sequelize.query utan att fånga upp den i en variabel då?
 
     return res.status(201).json({ message: "Success! User is now updated!" });
   } catch (error) {
