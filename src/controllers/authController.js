@@ -70,7 +70,7 @@ exports.register = async (req, res) => {
 
   return res.status(201).json({
     message: "Registration succeeded. Please log in.",
-  });
+  }); //location headers här? ELLER inte...? Kanske svårt att kombinera m message?
 };
 
 exports.login = async (req, res) => {
