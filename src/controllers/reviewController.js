@@ -1,38 +1,117 @@
-const { NotFoundError, BadRequestError } = require("../utils/errors");
+const {
+  NotFoundError,
+  BadRequestError,
+  UnauthorizedError,
+} = require("../utils/errors");
 const { sequelize } = require("../database/config");
 const { QueryTypes } = require("sequelize");
 const { review } = require("../data/review");
 
-
 exports.getAllReviews = async (req, res) => {
-  const gymId = req.params.gymId;
-  const userId= req.params.userId;
+  const gymId = req.query.gymId;
+  const userId = req.query.userId;
   const limit = Number(req.query.limit || 10);
   const offset = Number(req.query.offset || 0);
-  const [results, metadata] = await sequelize.query(
-    `
-    SELECT * FROM review WHERE fk_gym_id = $gymId LIMIT $limit OFFSET $offset;
+
+  if (gymId) {
+    const [results, metadata] = await sequelize.query(
       `
-      ,
-    {
-      bind: { gymId: gymId },
+    SELECT * FROM review WHERE fk_gym_id = $gymId LIMIT $limit OFFSET $offset;
+      `,
+      {
+        bind: {
+          gymId: gymId,
+          limit: limit,
+          offset: offset,
+        },
+      }
+    );
+    if (!results || results.length == 0) {
+      throw new NotFoundError("did not find reviews for that gym");
     }
-  );
-  if (!results || results.length == 0) {
-    throw new NotFoundError("did not find reviews for that gym");
+
+    return res.json({
+      data: results,
+      metadata: {
+        limit: limit,
+        offset: offset,
+      },
+    });
   }
 
-  return res.json({
-    data: results,
-    metadata: {
-      limit: limit,
-      offset: offset,
-    },
-  });
+  if (userId) {
+    const [results, metadata] = await sequelize.query(
+      `
+    SELECT * FROM review WHERE fk_user_id = $userId LIMIT $limit OFFSET $offset;
+      `,
+      {
+        bind: {
+          userId: userId,
+          limit: limit,
+          offset: offset,
+        },
+      }
+    );
+    if (!results || results.length == 0) {
+      throw new NotFoundError("did not find reviews for that gym");
+    }
+
+    return res.json({
+      data: results,
+      metadata: {
+        limit: limit,
+        offset: offset,
+      },
+    });
+  }
+
+  if (!userId && !gymId) {
+    const [results, metadata] = await sequelize.query(
+      `
+    SELECT * FROM review LIMIT $limit OFFSET $offset;
+      `,
+      {
+        bind: {
+          limit: limit,
+          offset: offset,
+        },
+      }
+    );
+    if (!results || results.length == 0) {
+      throw new NotFoundError("did not find reviews for that gym");
+    }
+
+    return res.json({
+      data: results,
+      metadata: {
+        limit: limit,
+        offset: offset,
+      },
+    });
+  }
 };
 // Get review by id
 exports.getReviewById = async (req, res) => {
+  const reviewId = req.params.reviewId;
+
   try {
+    const [results, metadata] = await sequelize.query(
+      `
+    SELECT * FROM review WHERE id = $reviewId;
+      `,
+      {
+        bind: {
+          reviewId: reviewId,
+        },
+      }
+    );
+    if (!results || results.length == 0) {
+      throw new NotFoundError("did not find any review with that id");
+    }
+
+    return res.json({
+      data: results,
+    });
     return res.send("Get review by id"); //scaffold return m meddelande
   } catch (error) {
     console.error(error);
@@ -81,8 +160,43 @@ VALUES
 
 // Update review (by id)
 exports.updateReviewById = async (req, res) => {
+  const { title, description, number_of_stars } = req.body;
+  const reviewId = req.params.reviewId;
   try {
-    return res.send("Update review"); //scaffold return m meddelande
+    const [userId, metadata] = await sequelize.query(
+      `
+    SELECT fk_user_id FROM review WHERE id = $reviewId;
+      `,
+      {
+        bind: {
+          reviewId: reviewId,
+        },
+      }
+    );
+    console.log(userId);
+    if (!userId || userId.length == 0) {
+      throw new NotFoundError("did not find that userid");
+    }
+
+    // if (userId[0] != req.user?.userId) {
+    //   throw new UnauthorizedError("Unauthorized Access");
+    // }
+    const [updatedReview] = await sequelize.query(
+      `UPDATE review SET title= $title, description = $description, number_of_stars = $number_of_stars
+      WHERE id = $reviewId RETURNING *;`,
+      {
+        bind: {
+          title: title,
+          description: description,
+          number_of_stars: number_of_stars,
+          reviewId: reviewId,
+        },
+      }
+    );
+
+    console.log(updatedReview[0]);
+
+    return res.status(200).json(updatedReview[0]);
   } catch (error) {
     console.error(error);
     return res.status(500).json({
