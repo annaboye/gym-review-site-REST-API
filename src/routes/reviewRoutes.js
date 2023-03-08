@@ -16,7 +16,7 @@ const {
 } = require("../middleware/authenticationMiddleware");
 
 router.get("/", getAllReviews);
-router.get("/:reviewId/review", getReviewById);
+router.get("/:reviewId", getReviewById);
 router.post("/", isAuthenticated, createNewReview);
 router.put("/:reviewId", isAuthenticated, updateReviewById);
 router.delete("/:reviewId", isAuthenticated, deleteReviewById);
