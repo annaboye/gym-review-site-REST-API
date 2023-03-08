@@ -151,7 +151,7 @@ exports.createGym = async (req, res) => {
           "Location",
           `${req.protocol}://${req.headers.host}/api/v1/gyms/${newGymId}`
         )
-        .sendStatus(201);
+        .sendStatus(201); //lägga till .json(newGym) för att även skicka tillbaka det?
     }
   } catch (error) {
     console.error(error);
