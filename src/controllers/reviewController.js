@@ -5,7 +5,8 @@ const {
 } = require("../utils/errors");
 const { sequelize } = require("../database/config");
 const { QueryTypes } = require("sequelize");
-const { review } = require("../data/review");
+
+const { userRoles } = require("../constants/users");
 
 exports.getAllReviews = async (req, res) => {
   const gymId = req.query.gymId;
@@ -177,7 +178,7 @@ exports.updateReviewById = async (req, res) => {
     if (!review || review.length == 0) {
       throw new NotFoundError("did not find any review with that id");
     }
-
+    // @ts-ignore
     if (review[0].fk_user_id != req.user?.userId) {
       throw new UnauthorizedError("Unauthorized Access");
     }
@@ -208,7 +209,39 @@ exports.updateReviewById = async (req, res) => {
 // Delete review (by id)
 exports.deleteReviewById = async (req, res) => {
   try {
-    return res.send("Delete review"); //scaffold return m meddelande
+    const reviewId = req.params.reviewId;
+    const [review, metadata] = await sequelize.query(
+      `
+    SELECT fk_user_id FROM review WHERE id = $reviewId;
+      `,
+      {
+        bind: {
+          reviewId: reviewId,
+        },
+      }
+    );
+    console.log(review);
+    if (!review || review.length == 0) {
+      throw new NotFoundError("did not find any review with that id");
+    }
+
+    if (
+      // @ts-ignore
+      review[0].fk_user_id != req.user?.userId &&
+      // @ts-ignore
+      req.user.role !== userRoles.ADMIN
+    ) {
+      throw new UnauthorizedError("Unauthorized Access");
+    }
+
+    await sequelize.query(
+      `DELETE FROM review WHERE id = $reviewId RETURNING *;`,
+      {
+        bind: { reviewId },
+      }
+    );
+
+    return res.status(200).json({ message: "review successfully deleted" });
   } catch (error) {
     console.error(error);
     return res.status(500).json({
