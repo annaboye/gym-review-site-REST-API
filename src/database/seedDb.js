@@ -35,8 +35,8 @@ const seedGymDb = async () => {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         gym_name TEXT,
         adress TEXT,
-        zipcode INTEGER,
-        phone INTEGER,
+        zipcode TEXT,
+        phone TEXT,
         fk_city_id INTEGER,
         FOREIGN KEY (fk_city_id) REFERENCES city(id)
     );
