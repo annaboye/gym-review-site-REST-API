@@ -177,7 +177,7 @@ exports.updateReviewById = async (req, res) => {
     if (!review || review.length == 0) {
       throw new NotFoundError("did not find any review with that id");
     }
-
+    // @ts-ignore
     if (review[0].fk_user_id != req.user?.userId) {
       throw new UnauthorizedError("Unauthorized Access");
     }
