@@ -1,6 +1,5 @@
 const { body } = require("express-validator");
 
-//express validator ger oss möjlighet till detta sätt att validera vår req.body med express inbyggda methods.
 exports.registerSchema = [
   body("full_name").isString().withMessage("Full name must be a string."),
   body("full_name")

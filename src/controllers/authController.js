@@ -70,11 +70,11 @@ exports.register = async (req, res) => {
 
   return res.status(201).json({
     message: "Registration succeeded. Please log in.",
-  }); //location headers här? ELLER inte...? Kanske svårt att kombinera m message?
+  });
 };
 
 exports.login = async (req, res) => {
-  const { email, password: canditatePassword } = req.body; // CandidatePassword är en variabel vi skapar.
+  const { email, password: canditatePassword } = req.body;
 
   const [user, metadata] = await sequelize.query(
     `SELECT * FROM user WHERE email = $email LIMIT 1;`,
@@ -95,8 +95,6 @@ exports.login = async (req, res) => {
   );
   if (!isPasswordCorrect) throw new UnauthenticatedError("Invalid Credentials");
 
-  //skapa datan i.e. payloaden som vi vill att vår jwt token ska innehålla: (obs lägg ej in känslig info här iom alla jwt webtokens kan avkrypteras enkelt tex på jwt.io)
-  //inkludera bara data i vår payload som vi inte har ngt emot att alla ser! obs!
   const jwtPayload = {
     // @ts-ignore
     userId: user.id,

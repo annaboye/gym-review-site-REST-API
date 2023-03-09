@@ -1,5 +1,4 @@
 const express = require("express");
-const { userRoles } = require("../constants/users");
 const router = express.Router();
 
 const {
@@ -10,10 +9,7 @@ const {
   deleteReviewById,
 } = require("../controllers/reviewController");
 
-const {
-  isAuthenticated,
-  authorizeRoles,
-} = require("../middleware/authenticationMiddleware");
+const { isAuthenticated } = require("../middleware/authenticationMiddleware");
 
 router.get("/", getAllReviews);
 router.get("/:reviewId", getReviewById);

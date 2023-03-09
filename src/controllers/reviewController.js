@@ -1,11 +1,6 @@
-const {
-  NotFoundError,
-  BadRequestError,
-  UnauthorizedError,
-} = require("../utils/errors");
+const { NotFoundError, UnauthorizedError } = require("../utils/errors");
 const { sequelize } = require("../database/config");
 const { QueryTypes } = require("sequelize");
-const { review } = require("../data/review");
 
 exports.getAllReviews = async (req, res) => {
   const gymId = req.query.gymId;
@@ -90,7 +85,7 @@ exports.getAllReviews = async (req, res) => {
     });
   }
 };
-// Get review by id
+
 exports.getReviewById = async (req, res) => {
   const reviewId = req.params.reviewId;
 
@@ -112,7 +107,6 @@ exports.getReviewById = async (req, res) => {
     return res.json({
       data: results,
     });
-    return res.send("Get review by id"); //scaffold return m meddelande
   } catch (error) {
     console.error(error);
     return res.status(500).json({
@@ -121,7 +115,6 @@ exports.getReviewById = async (req, res) => {
   }
 };
 
-// Create new review
 exports.createNewReview = async (req, res) => {
   try {
     const { title, description, number_of_stars, fk_gym_id } = req.body;
@@ -149,7 +142,7 @@ VALUES
         "Location",
         `${req.protocol}://${req.headers.host}/api/v1/review/${newReviewId}`
       )
-      .sendStatus(201); //lägga till .json(newReview) för att även skicka tillbaka jsonobjekt med det nyskapade objektet new Review?
+      .sendStatus(201);
   } catch (error) {
     console.error(error);
     return res.status(500).json({
@@ -158,7 +151,6 @@ VALUES
   }
 };
 
-// Update review (by id)
 exports.updateReviewById = async (req, res) => {
   const { title, description, number_of_stars } = req.body;
   const reviewId = req.params.reviewId;
@@ -205,7 +197,6 @@ exports.updateReviewById = async (req, res) => {
   }
 };
 
-// Delete review (by id)
 exports.deleteReviewById = async (req, res) => {
   try {
     const reviewId = req.params.reviewId;
