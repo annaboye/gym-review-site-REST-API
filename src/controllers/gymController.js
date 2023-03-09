@@ -18,7 +18,7 @@ exports.getAllGyms = async (req, res) => {
 
     if (!city) {
       const [gyms, metadata] = await sequelize.query(
-        `SELECT * FROM gym ORDER by gym_name ASC, fk_city_id ASC LIMIT $limit OFFSET $offset;`,
+        `SELECT * FROM gym ORDER by gym_name ASC LIMIT $limit OFFSET $offset;`,
         {
           bind: {
             limit: limit,
@@ -151,7 +151,7 @@ exports.createGym = async (req, res) => {
           "Location",
           `${req.protocol}://${req.headers.host}/api/v1/gyms/${newGymId}`
         )
-        .sendStatus(201); //lägga till .json(newGym) för att även skicka tillbaka det?
+        .sendStatus(201); //lägga till .json(newGym) för att även skicka tillbaka
     }
   } catch (error) {
     console.error(error);
