@@ -53,7 +53,7 @@ exports.getAllReviews = async (req, res) => {
       }
     );
     if (!results || results.length == 0) {
-      throw new NotFoundError("did not find reviews for that gym");
+      throw new NotFoundError("did not find reviews for that user");
     }
 
     return res.json({

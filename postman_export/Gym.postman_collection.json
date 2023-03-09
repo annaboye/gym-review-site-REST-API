@@ -1,0 +1,596 @@
+{
+	"info": {
+		"_postman_id": "67f8301e-1716-4426-81f7-5b5cc6b37f8b",
+		"name": "Gym",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25244948"
+	},
+	"item": [
+		{
+			"name": "gyms",
+			"item": [
+				{
+					"name": "getAllGyms - /api/v1/gyms/",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": " "
+						},
+						"url": {
+							"raw": "localhost:3000/api/v1/gyms/?limit=20",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"gyms",
+								""
+							],
+							"query": [
+								{
+									"key": "city",
+									"value": "Göteborg",
+									"description": "Vi har Stockholm, Göteborg och Malmö",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								},
+								{
+									"key": "offset",
+									"value": "0",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getGymById - /api/v1/gyms/gymId/",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/v1/gyms/4/",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"gyms",
+								"4",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createGym - /api/v1/gyms/",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJBbGlhcyI6IkFkbWluQW5rYW4iLCJlbWFpbCI6ImFua2FucGFua2FuQGVtYWlsLnNlIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjc4MzU1OTY4LCJleHAiOjE2Nzg0NDIzNjh9.eS8kbGR-LzD4uItbvvhbIgFxSaZIldW68lRqq_Qiw90",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n          \"gym_name\": \"TestGym\",\r\n          \"adress\": \"TestAdress\",\r\n          \"zipcode\": \"12345\",\r\n          \"phone\": \"087558888\",\r\n          \"fk_city_id\": 1\r\n        }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/v1/gyms/",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"gyms",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateGymById - /api/v1/gyms/gymId/",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJBbGlhcyI6IkFkbWluQW5rYW4iLCJlbWFpbCI6ImFua2FucGFua2FuQGVtYWlsLnNlIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjc4MzU4NDc2LCJleHAiOjE2Nzg0NDQ4NzZ9.y-zlNzNNNfstXQ6R1yDor6ERoH7OdQMMxcYDwt4d9vY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n          \"gym_name\": \"UpdateGymTest\",\r\n          \"adress\": \"UpdateAdressTest\",\r\n          \"zipcode\": \"19987\",\r\n          \"phone\": \"0701265621\",\r\n          \"fk_city_id\": 1\r\n          \r\n        }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/v1/gyms/11/",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"gyms",
+								"11",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteGymById - /api/v1/gyms/gymId/",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJBbGlhcyI6IkFkbWluQW5rYW4iLCJlbWFpbCI6ImFua2FucGFua2FuQGVtYWlsLnNlIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjc4MzU5NzU2LCJleHAiOjE2Nzg0NDYxNTZ9.5jMBpWzyChSDae7mN_CGEib7_Gjn9C0ZOkJCMMH5DC0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/v1/gyms/11/",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"gyms",
+								"11",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "getAllUsers - /api/v1/users/",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJBbGlhcyI6IkFkbWluQW5rYW4iLCJlbWFpbCI6ImFua2FucGFua2FuQGVtYWlsLnNlIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjc4MzU1NTQ5LCJleHAiOjE2Nzg0NDE5NDl9.B_LiVSPu_i8VMXrLe0zDjPDteXTt5d_eaSZYlA77s0s",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/v1/users/",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								""
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "2",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUserById -  /api/v1/users/userId/",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJBbGlhcyI6IkFkbWluQW5rYW4iLCJlbWFpbCI6ImFua2FucGFua2FuQGVtYWlsLnNlIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjc4MzU1NTQ5LCJleHAiOjE2Nzg0NDE5NDl9.B_LiVSPu_i8VMXrLe0zDjPDteXTt5d_eaSZYlA77s0s",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/v1/users/3/",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"3",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateUserById - /api/v1/users/userId/",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJBbGlhcyI6IkFkbWluQW5rYW4iLCJlbWFpbCI6ImFua2FucGFua2FuQGVtYWlsLnNlIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjc4MzU5NzU2LCJleHAiOjE2Nzg0NDYxNTZ9.5jMBpWzyChSDae7mN_CGEib7_Gjn9C0ZOkJCMMH5DC0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "  {\n    \"full_name\": \"Ducky Ducksson Smith\",\n    \"user_alias\": \"luckyducky\",\n    \"email\": \"ducky@email.se\",\n    \"password\": \"secret\"\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/v1/users/4/",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"4",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteUserById - /api/v1/users/userId/",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJBbGlhcyI6IkFkbWluQW5rYW4iLCJlbWFpbCI6ImFua2FucGFua2FuQGVtYWlsLnNlIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjc4MzU5NzU2LCJleHAiOjE2Nzg0NDYxNTZ9.5jMBpWzyChSDae7mN_CGEib7_Gjn9C0ZOkJCMMH5DC0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/v1/users/4/",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"4",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "reviews",
+			"item": [
+				{
+					"name": "getAllReviews - /api/v1/reviews/",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/v1/reviews/",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"reviews",
+								""
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "2",
+									"disabled": true
+								},
+								{
+									"key": "skip",
+									"value": "0",
+									"disabled": true
+								},
+								{
+									"key": "userId",
+									"value": "4",
+									"disabled": true
+								},
+								{
+									"key": "gymId",
+									"value": "4",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getReviewById - /api/v1/reviews/reviewId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/v1/reviews/4",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"reviews",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createReview - /api/v1/reviews/",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJBbGlhcyI6IkFkbWluQW5rYW4iLCJlbWFpbCI6ImFua2FucGFua2FuQGVtYWlsLnNlIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjc4MzU5NzU2LCJleHAiOjE2Nzg0NDYxNTZ9.5jMBpWzyChSDae7mN_CGEib7_Gjn9C0ZOkJCMMH5DC0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"TestNewReviewTitle\",\r\n    \"description\": \"Testing description.\",\r\n    \"number_of_stars\": 4,\r\n    \"fk_gym_id\": 4\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/v1/reviews/",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"reviews",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateReviewById - /api/v1/reviews/reviewId/",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJBbGlhcyI6IkFkbWluQW5rYW4iLCJlbWFpbCI6ImFua2FucGFua2FuQGVtYWlsLnNlIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjc4MzYwNTAzLCJleHAiOjE2Nzg0NDY5MDN9.7tn_LjvIYZRLsf9xLCcPDWlniIae2hV0dF-jXTZNEd4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"TestUpdateReviewTitle\",\r\n    \"description\": \"Testing update description.\",\r\n    \"number_of_stars\": 5,\r\n    \"fk_gym_id\": 4\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/v1/reviews/11/",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"reviews",
+								"11",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteReviewById - /api/v1/reviews/reviewId/",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJBbGlhcyI6IkFkbWluQW5rYW4iLCJlbWFpbCI6ImFua2FucGFua2FuQGVtYWlsLnNlIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjc4MzU5NzU2LCJleHAiOjE2Nzg0NDYxNTZ9.5jMBpWzyChSDae7mN_CGEib7_Gjn9C0ZOkJCMMH5DC0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/api/v1/reviews/11/",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"reviews",
+								"11",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "logInUser - /api/v1/auth/login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "  {\n    \"email\": \"ankanpankan@email.se\",\n    \"password\": \"secret\"\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/v1/auth/login",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "registerUser - /api/v1/auth/register/",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "  {\n    \"full_name\": \"Päron\",\n    \"user_alias\": \"päronets2\",\n    \"email\": \"päronets2@mail.se\",\n    \"password\": \"secret\"\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/v1/auth/register/",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"register",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
